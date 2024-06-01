@@ -37,27 +37,38 @@ void RenderEarly() {
     g_screen.y = Draw::GetHeight();
 }
 
-[Setting category="General" name="Msg Time Length (ms)" min=1000 max=10000]
+[Setting category="General" name="Test Mode (for configuring)"]
+bool S_TestMode = false;
+
+[Setting category="General" name="Msg Time Length (ms)" min=1000 max=10000 drag]
 uint focusMsgTimeout = 5000;
 
 [Setting category="General" name="Msg 1"]
 string S_Msg1 = "Wait for lag!";
 
 
-[Setting category="General" name="Font Size" min=10.0 max=300.0]
+[Setting category="General" name="Font Size" min=10.0 max=300.0 drag]
 float S_FontSize = 50.0;
 
-[Setting category="General" name="Msg 1 Location" min=0.0 max=1.0]
+[Setting category="General" name="Msg 1 Location" min=0.0 max=1.0 drag]
 vec2 S_MsgWarning1Pos = vec2(.5, .5);
-[Setting category="General" name="Msg 2 (Timer) Location" min=0.0 max=1.0]
+[Setting category="General" name="Msg 2 (Timer) Location" min=0.0 max=1.0 drag]
 vec2 S_MsgWarning2Pos = vec2(.5, .65);
 
-[Setting category="General" name="Msg Color"]
-vec4 S_Color = vec4(1, 0.4, 0.2, 1);
+[Setting category="General" name="Msg Color" color]
+vec4 S_Color = vec4(0.863f, 0.804f, 0.076f, 1.000f);
 
 
 // 8:44
 void Render() {
+    if (S_TestMode) {
+        if (lastOnFocusTime + focusMsgTimeout < Time::Now) {
+            lastOnFocusTime = Time::Now;
+        }
+        _DrawFocusAlarm();
+        return;
+    }
+
     if (!isInPlayground || Time::Now - lastOnFocusTime > focusMsgTimeout) {
         return;
     }
